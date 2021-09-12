@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.png" />
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <title>VaxWallet - Import MOPH Vaccine Certificate</title>
+    <meta property="og:title" content="VaxWallet Thai Vaccine Certificate" />
+    <meta property="og:url" content="https://vaxwallet.xyz/" />
+    <meta property="og:description" content="Import Thai Ministry of Public Health paper certificate to Apple Wallet and Android Wallet" />
+    <meta property="og:image" content="https://www.servicesaustralia.gov.au/sites/default/files/styles/dhs_news_article_image/public/2021-08/15469b-2107.jpg" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="VaxWallet Thai Vaccine Certificate">
+    <meta name="twitter:description" content="Import Thai Ministry of Public Health paper certificate to Apple Wallet and Android Wallet">
+    <meta name="twitter:image" content="https://www.servicesaustralia.gov.au/sites/default/files/styles/dhs_news_article_image/public/2021-08/15469b-2107.jpg">
+
+    <style>
+      label { font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <main class="container" x-data="{ th: false }">
+      <label for="th">
+        <input type="checkbox" id="th" role="switch" x-model="th" value="true">
+        วุ้นแปลภาษา 🍮
+      </label>
+      <hgroup x-show="!th">
+        <h2>VaxWallet</h2>
+        <h3>This unofficial app lets you import a Ministry of Public Health paper certificate to Apple Wallet and Android Wallet. We do not retain any data nor keep any record of your information.</h3>
+      </hgroup>
+      <hgroup x-show="th">
+        <h2>นำเข้าใบรับรองวัคซีน</h2>
+        <h3>แอปนี้ช่วยแปลงใบรับรองวัคซีนจากกระทรวงสาธารณสุข ไว้ในรูปแบบของไฟล์ Apple Wallet และ Android Wallet ที่เรียกใช้ง่าย ข้อมูลที่คุณกรอกมาจะถูกทำลายทันทีหลังจากสร้างไฟล์สำเร็จ และไม่มีการจัดเก็บไว้บนเซิร์ฟเวอร์</h3>
+      </hgroup>
+
+      <form method="get" action="https://asia-southeast1-vaxwallet-ed4d2.cloudfunctions.net/generate">
+        <fieldset class="grid">
+          <label for="national-id">
+            <input type="radio" id="national-id" name="idtype" value="nationalid" checked>
+            <span x-show="!th">Thai National ID</span>
+            <span x-show="th">เลขประจำตัวประชาชน</span>
+          </label>
+          <label for="passport-no">
+            <input type="radio" id="passport-no" name="idtype" value="passportno">
+            <span x-show="!th">Passport No.</span>
+            <span x-show="th">หมายเลขพาสปอร์ต</span>
+          </label>
+        </fieldset>
+        <input type="text" id="id" name="id" placeholder="1-2345-43210-12-3" required>
+
+        <label for="name" x-show="!th">Full Name</label>
+        <label for="name" x-show="th">ชื่อ-สกุล</label>
+        <input type="text" id="name" name="name" placeholder="Sek Loso" required>
+
+        <div class="grid">
+          <div>
+            <label for="dose1date" x-show="!th">Dose 1</label>
+            <label for="dose1date" x-show="th">เข็มที่ 1</label>
+            <input type="date" id="dose1date" name="dose1date" required>
+            <select id="dose1vac" name="dose1vac" required>
+              <option value selected x-text="th ? 'วัคซีน...' : 'Vaccine...'"></option>
+              <option>AstraZeneca Vaxzevria</option>
+              <option>Sinovac CoronaVac</option>
+              <option>Sinopharm COVILO</option>
+              <option>Pfizer Comirnaty</option>
+            </select>
+            <input type="text" id="dose1lot" name="dose1lot" x-bind:placeholder="th ? 'ล็อต (ถ้ามี)' : 'Lot No. (Optional)'">
+          </div>
+
+          <div>
+            <label for="dose2">
+              <!-- <input type="checkbox" id="dose2" name="dose2" role="switch" checked=""> -->
+              <span x-show="!th">Dose 2</span>
+              <span x-show="th">เข็มที่ 2</span>
+            </label>
+            <input type="date" id="dose2date" name="dose2date" required>
+            <select id="dose2vac" name="dose2vac" required>
+              <option value selected x-text="th ? 'วัคซีน...' : 'Vaccine...'"></option>
+              <option>AstraZeneca Vaxzevria</option>
+              <option>Sinovac CoronaVac</option>
+              <option>Sinopharm COVILO</option>
+              <option>Pfizer Comirnaty</option>
+            </select>
+            <input type="text" id="dose2lot" name="dose2lot" x-bind:placeholder="th ? 'ล็อต (ถ้ามี)' : 'Lot No. (Optional)'">
+          </div>
+        </div>
+
+        <label for="url">QR Code</label>
+        <input type="url" id="url" name="url" placeholder="https://co19cert.moph.go.th/..." required>
+        <small>
+          <span x-show="!th">Scan the QR Code on your paper certificate to open the website, then paste its URL here</span>
+          <span x-show="th">สแกนเครื่องหมาย QR Code บนใบรับรองที่คุณได้รับจากจุดรับวัคซีน เพื่อเปิดเว็บไซต์ และคัดลอก URL ของเว็บไซต์มาวางในช่องนี้</span>
+        </small>
+
+        <fieldset>
+          <label for="agree">
+            <input type="checkbox" id="agree" role="switch" required>
+            <span x-show="!th">I certify that this information is wholly accurate and I will be solely legally responsible for misuse of this certificate</span>
+            <span x-show="th">ฉันรับรองว่าข้อมูลเหล่านี้เป็นความจริง และฉันจะเป็นผู้รับผิดชอบผลกระทบจากการใช้ใบรับรองนี้ในทางไม่ถูกต้องแต่เพียงผู้เดียว</span>
+          </label>
+        </fieldset>
+
+        <input type="submit" x-show="!th" value="Submit">
+        <input type="submit" x-show="th" value="บันทึก">
+      </form>
+      
+      <p x-show="!th">
+        This app is provided free of charge without any guarantees. If you like it, please
+        <a href="https://twitter.com/intent/tweet?text=If%20you%20don%27t%20want%20to%20carry%20or%20lose%20your%20paper%20vaccine%20certificate%2C%20use%20this%20website%20to%20save%20it%20on%20your%20Wallet%20app%3A%20https%3A%2F%2Fvaxwallet.xyz%2F">
+          share a tweet.
+        </a>
+      </p>
+      <p x-show="th">
+        แอปนี้ให้ใช้งานฟรีโดยไม่มีการรับประกันใดๆ หากเป็นประโยชน์
+        <a href="https://twitter.com/intent/tweet?text=%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B9%80%E0%B8%A7%E0%B9%87%E0%B8%9A%E0%B8%99%E0%B8%B5%E0%B9%89%E0%B8%9A%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%B6%E0%B8%81%E0%B8%82%E0%B9%89%E0%B8%AD%E0%B8%A1%E0%B8%B9%E0%B8%A5%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%A7%E0%B8%B1%E0%B8%84%E0%B8%8B%E0%B8%B5%E0%B8%99%E0%B9%80%E0%B8%82%E0%B9%89%E0%B8%B2%E0%B9%83%E0%B8%99%E0%B9%81%E0%B8%AD%E0%B8%9B%20Wallet%20%E0%B9%84%E0%B8%94%E0%B9%89%E0%B9%80%E0%B8%A5%E0%B8%A2%20%E0%B8%9F%E0%B8%A3%E0%B8%B5%20%E0%B9%80%E0%B8%9B%E0%B8%B4%E0%B8%94%E0%B8%94%E0%B8%B9%E0%B8%87%E0%B9%88%E0%B8%B2%E0%B8%A2%20https%3A%2F%2Fvaxwallet.xyz%2F">
+          อย่าลืมทวีตบอกคนอื่น
+        </a>
+      </p>
+    </main>
+
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+    
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyAjNvIHYwdGw6mU1U7YW6DvFM1nWW7EOXo",
+        authDomain: "vaxwallet-ed4d2.firebaseapp.com",
+        projectId: "vaxwallet-ed4d2",
+        storageBucket: "vaxwallet-ed4d2.appspot.com",
+        messagingSenderId: "100174707021",
+        appId: "1:100174707021:web:a254e03abc073512641f04",
+        measurementId: "G-FR3ZTFCJF7"
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+    </script>
+  </body>
+</html>
